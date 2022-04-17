@@ -8,11 +8,11 @@ const config = require('../utils/config-helper')
 const publicKey = fs.readFileSync(path.join(__dirname, '..', 'jwt/', `${config.getEnv()}`, 'jwtRS256.key.pub'))
 
 module.exports = (req, res, next) => {
-  if (!req.header('authorization')) {
+  if (!req.signedCookies.token) {
     res.status(403).send(resGen.getObj('Unauthorized'))
     return
   }
-  jsonwebtoken.verify(req.headers.authorization, publicKey, {
+  jsonwebtoken.verify(req.signedCookies.token, publicKey, {
     algorithms: ['RS256'],
   }, (err, decoded) => {
     if (err) {
@@ -30,6 +30,7 @@ module.exports = (req, res, next) => {
         if (user.role !== 'ADMIN') {
           throw new Error('Unauthorized, not a admin')
         }
+        console.log(user)
         req.user = user
         next()
       }).catch((error) => {

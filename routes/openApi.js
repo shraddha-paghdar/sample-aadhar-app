@@ -17,7 +17,7 @@ const resGen = require('../utils/response-generator')
  * Login and provide a basic user profile
  * along with a signed JWT token
  */
- router.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
   if (!req.body.email) {
     res.status(401).send(resGen.getObj('Invalid Email'))
     return
@@ -60,6 +60,16 @@ const resGen = require('../utils/response-generator')
   }).catch((err) => {
     res.status(501).send(resGen.getObj(err.message))
   })
+})
+
+/* API to clear out the cookie token */
+router.get('/logout', (req, res) => {
+  res.cookie('token', null, {
+    secure: config.getConfig() === 'production',
+    signed: true,
+    httpOnly: true,
+  })
+  res.redirect('/log-in')
 })
 
 module.exports = router;

@@ -1,0 +1,174 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/admin/list_aadhar">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/create-form">Create New</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/myAccount">My Profile</a>
+        </li>
+      </ul>
+      <a class="nav-link" onclick="logout()">Logout</a>
+    </div>
+  </div>
+</nav>
+<body>
+  {{!-- Login Form --}}
+<div class="login">
+  <div class="container pt-5">
+    <div class="row justify-content-center">
+    <div class="card card p-3 p-md-4">
+    <form id="EnrollForm" autocomplete="off">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>First name</label>
+          <input type="text" required class="form-control" id="first_name" name="first_name" pattern="[a-zA-Z0-9\s]+">
+        </div>{{!-- group --}}
+      </div>{{!-- col-6 --}}
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Last name</label>
+          <input type="text" class="form-control" id="last_name" name="last_name" pattern="[a-zA-Z0-9\s]+">
+        </div>{{!-- group --}}
+      </div>{{!-- col-6 --}}
+    </div>{{!-- row --}}
+    <div class="form-group">
+      <label>Email id</label>
+      <input type="email"
+        pattern="[a-z0-9!#$%&‘*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+        class="form-control" id="emaiId" name="emailId" required>
+    </div>{{!-- group --}}
+    <div class="form-group">
+      <label>Contact No.</label>
+      <div class="input-group">
+        <div class="input-group-prepend contact-no-prepend">
+          <select class="form-select"  name="countryCode" id="country_code">
+            {{#each countryCodes}}
+            <option value="{{country}}">{{countryCode}} ({{country}})</option>
+            {{/each}}
+          </select>
+        </div>{{!-- prepend --}}
+        <input type="text" pattern="[0-9]{7,12}" minlength="7" maxlength="12" class="form-control" id="contact_no"
+          title="Minimum 7 Digit Contact Number" name="phoneNumber" required>
+      </div>{{!-- input --}}
+    </div>{{!-- group --}}
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Age</label>
+          <select class="form-select"  id="age" name="age">
+            <option value="17 & Below">17 & Below</option>
+            <option value="18-24">18-24</option>
+            <option value="25-34">25-34</option>
+            <option value="35-44">35-44</option>
+            <option value="45-59">45-59</option>
+            <option value="60+">60+</option>
+          </select>
+        </div>{{!-- group --}}
+      </div>
+      {{!-- col-6 --}}
+      <div class="col-6">
+        <div class="form-group">
+          <label>Gender</label>
+          <select class="form-select" id="gender" name="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>{{!-- group --}}
+      </div>
+      {{!-- col-6 --}}
+    </div>
+    {{!-- row --}}
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" minlength="6" class="form-control" id="password" name="password" required>
+    </div>{{!-- group --}}
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input type="password" minlength="6" class="form-control" id="confpassword" name="confpassword" required>
+    </div>{{!-- group --}}
+    <small class="text-danger" id="password_mismatch">Password don't match</small>
+    <div class="text-center mt-5">
+      <button type="submit" id="enroll" class="btn btn-primary">Add</button>
+    </div>{{!-- center --}}
+    </form>
+    </div>
+    </div>
+  </div>{{!-- row --}}
+</div>{{!-- conatainer --}}
+</div>{{!-- top --}}
+{{!-- Script --}}
+<script>
+    $(document).ready(function () {
+      // On key up function to check password & Confirm password input field
+      $('#confpassword').on('keyup', function () {
+        let passwordValue = $("#password").val();
+        let confPasswordValue = $("#confpassword").val();
+        let btnSubmit = document.getElementById("enroll");
+        if (passwordValue !== confPasswordValue) {
+          btnSubmit.disabled = true;
+          $('#password_mismatch').show();
+        } else {
+          btnSubmit.disabled = false;
+          $('#password_mismatch').hide();
+        }
+      })
+      $('#EnrollForm').on('submit', function (e) {
+        e.preventDefault();
+        let data = {
+          email: $('#emaiId').val(),
+          password: $('#confpassword').val(),
+          firstName: $('#first_name').val(),
+          lastName: $('#last_name').val(),
+          phoneNumber: $('#contact_no').val(),
+          country: $('#country_code').val(),
+          age: $('#age').val(),
+          gender: $('#gender').val(),
+        };
+
+        $.ajax({
+          url: '/admin/aadhar',
+          type: 'POST',
+          data: {
+            email: data.email,
+            phoneNo: data.phoneNumber,
+            country: data.country,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            age: data.age,
+            gender: data.gender,
+            uniqueCode: data.uniqueCode,
+            password: data.password,
+            role: 'USER',
+          },
+          dataType: 'json',
+          success: function (msg) {
+            window.location = `/admin/list_aadhar`
+          },
+          error: function (jqXHR, textStatus) {
+            let responseText = jQuery.parseJSON(jqXHR.responseText);
+            swal({
+              icon: "error",
+              title: "Oops..",
+              text: responseText['message'],
+              button: false,
+            })
+          }
+        });
+      });
+    });
+ function logout() {
+    window.localStorage.clear()
+    window.location = '/open/logout';
+  }
+</script>
+</body>

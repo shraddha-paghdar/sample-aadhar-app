@@ -8,6 +8,7 @@ const indexRouter = require('./routes/index');
 
 const userApi = require('./routes/userApi')
 const adminApi = require('./routes/adminApi')
+const openApi = require('./routes/openApi')
 
 const adminAuth = require('./authorizers/adminAuthorizer')
 const userAuth = require('./authorizers/userAuthorizer')
@@ -21,10 +22,14 @@ app.set('view engine', 'hbs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser("qawesrdtfyguhij"));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/public',  express.static(path.join(__dirname, 'public')))
+
 app.use('/', indexRouter);
+
+app.use('/open', openApi)
 
 // User Api
 app.use('/user', userAuth)

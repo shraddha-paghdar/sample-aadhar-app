@@ -1,7 +1,44 @@
-<div class="card" style="width: 18rem;">
-  <img class="card-img-top" src="..." alt="Card image cap">
-  <div class="card-body">
-    <h5 class="card-title">{{user.firstName}} {{user.lastName}}</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/admin/list_aadhar">Home</a>
+        </li>
+      </ul>
+      <a class="nav-link" onclick="logout()">Logout</a>
+    </div>
   </div>
-</div>
+</nav>
+<div class="login">
+  <div class="container pt-5">
+    <div class="row justify-content-center">
+      <div class="card p-3 p-md-4 text-center">
+        <h1>Welcome {{userDetails.firstName}} {{userDetails.lastName}}</h1>
+        <img src="../public/images/user-vector.jpeg" class="card-img-top center" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{userDetails.aadharId}}</h5>
+    <p class="card-text">
+     
+      Age: {{userDetails.age}}
+      <br>
+      Gender: {{userDetails.gender}}
+      <br>
+      Phone: {{userDetails.countryCode}} {{userDetails.phoneNo}}
+      </p>
+    <a onclick="logout()" class="btn btn-primary">Logout</a>
+  </div>
+      </div>{{!-- card --}}
+    </div>{{!-- row --}}
+    
+  </div>{{!-- conatainer --}}
+</div>{{!-- top --}}
+<script>
+   function logout() {
+    window.localStorage.clear()
+    window.location = '/open/logout';
+  }
+</script>

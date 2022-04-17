@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const saltRounds = 10
 const bcrypt = require('bcrypt')
+const models = require('../models')
+const resGen = require('../utils/response-generator')
 
 /* APi to get my account */
 router.get('/myAccount', async (req, res) => {
   try {
+    console.log(req.user)
     const user = await models.User.findOne({
       where: {
         email: req.user.email,
@@ -15,8 +18,7 @@ router.get('/myAccount', async (req, res) => {
     if (!user) {
       throw new Error('No user found!')
     }
-    res.render('admin-account', {
-      user: req.user,
+    res.render('admin/admin-account', {
       userDetails: user,
     })
   } catch (err) {
@@ -25,13 +27,21 @@ router.get('/myAccount', async (req, res) => {
 })
 
 // API to get list of all users
-router.get('/list-addhar', async (req, res) => {
+router.get('/list_aadhar', async (req, res) => {
   try {
     const users = await models.User.findAll({})
-    res.send(users)
+    res.render('admin/list-aadhr', {users})
   } catch (err) {
     res.status(501).send(resGen.getObj(err.message))
   }
+})
+
+router.get('/create-form', (req, res) => {
+  const countryCodes = [{ countryCode: '+91', country: 'India' },
+  { countryCode: '+65', country: 'Singapore' },
+  { countryCode: '+44', country: 'United Kingdom' },
+  { countryCode: '+49', country: 'Germany' }]
+  res.render('admin/enrollment-form', {countryCodes})
 })
 
 // API to get details of individual user
@@ -44,7 +54,7 @@ router.get('/aadhar', async (req, res) => {
     if (!user) {
       throw new Error('User not found')
     }
-    res.send(user)
+    res.render('aadhar-detail', { user })
   } catch (err) {
     res.status(501).send(resGen.getObj(err.message))
   }
@@ -57,9 +67,11 @@ router.post('/aadhar', async (req, res) => {
       throw new Error('Please enter an email address')
     }
     const user = await models.User.findByPk(req.body.email)
-    if (!user) {
+    if (user) {
       throw new Error('User already exist')
     }
+
+    console.log(req.body.password)
 
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds)
     req.body.password = hashedPassword

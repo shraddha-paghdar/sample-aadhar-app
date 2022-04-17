@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const models = require('../models')
+const resGen = require('../utils/response-generator')
 
 /* APi to get my account */
 router.get('/myAccount', async (req, res) => {
@@ -13,8 +15,7 @@ router.get('/myAccount', async (req, res) => {
     if (!user) {
       throw new Error('No user found!')
     }
-    res.render('account', {
-      user: req.user,
+    res.render('aadhar-detail', {
       userDetails: user,
     })
   } catch (err) {
